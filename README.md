@@ -23,8 +23,12 @@ $mailer->send($message, urgent: true, queue: false);
 
 ## Requirements
 
-- PHP 8.3+
+- PHP 8.3+ to run the rule
 - `rector/rector` ^2.0
+
+The **processed code** only needs PHP 8.0+ (named arguments): the rule declares
+`MinPhpVersionInterface`, so Rector automatically skips it when your project's
+PHP version target is below 8.0.
 
 ## Installation
 
