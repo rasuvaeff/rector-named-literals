@@ -1,0 +1,8 @@
+<?php
+
+final class Mailer2
+{
+    public function send(string $message, bool $urgent): void {}
+}
+
+(new Mailer2())->send('hi', urgent: true);

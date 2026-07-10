@@ -1,0 +1,11 @@
+<?php
+
+interface Sender
+{
+    public function deliver(string $to, bool $cc): void;
+}
+
+function notifyAll(Sender $sender): void
+{
+    $sender->deliver('a@b.test', true);
+}

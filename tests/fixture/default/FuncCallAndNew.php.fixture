@@ -1,0 +1,11 @@
+<?php
+
+function greet(string $name, bool $shout): void {}
+
+final class Report
+{
+    public function __construct(string $title, bool $draft) {}
+}
+
+greet('bob', true);
+new Report('q3', false);

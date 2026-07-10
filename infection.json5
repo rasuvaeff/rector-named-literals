@@ -1,0 +1,23 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["src"],
+        // The rule shell and the reflection glue are exercised only through
+        // the e2e suite (a real `rector process` subprocess), which in-process
+        // mutation coverage cannot see. All decision logic lives in the
+        // unit-covered LiteralMatcher / ArgumentNamingPlanner.
+        "excludes": [
+            "AddNameToLiteralArgumentRector.php",
+            "Internal/LiteralArgumentNamer.php"
+        ]
+    },
+    "logs": {
+        "text": "php://stderr",
+        "summary": "build/infection-summary.log"
+    },
+    "testFramework": "testo",
+    "minMsi": 85,
+    "mutators": {
+        "@default": true
+    }
+}

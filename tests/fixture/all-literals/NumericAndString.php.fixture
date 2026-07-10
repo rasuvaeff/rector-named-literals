@@ -1,0 +1,5 @@
+<?php
+
+function retryPolicy(int $attempts, float $backoff, string $strategy): void {}
+
+retryPolicy(3, 2.5, 'linear');

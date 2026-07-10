@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * @no-named-arguments
+ */
+final class Legacy
+{
+    public function toggle(string $key, bool $state): void {}
+}
+
+(new Legacy())->toggle('feature', true);

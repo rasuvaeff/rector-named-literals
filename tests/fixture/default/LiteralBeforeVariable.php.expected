@@ -1,0 +1,11 @@
+<?php
+
+final class Task
+{
+    public function run(bool $force, string $mode): void {}
+}
+
+function launch(Task $task, string $mode): void
+{
+    $task->run(force: true, mode: $mode);
+}

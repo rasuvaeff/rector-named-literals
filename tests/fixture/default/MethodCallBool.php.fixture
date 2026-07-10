@@ -1,0 +1,9 @@
+<?php
+
+final class Mailer
+{
+    public function send(string $message, bool $urgent, bool $queue): void {}
+}
+
+$mailer = new Mailer();
+$mailer->send('hi', true, false);

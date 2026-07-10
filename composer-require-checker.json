@@ -1,0 +1,38 @@
+{
+    "symbol-whitelist": [
+        "PhpParser\\Node",
+        "PhpParser\\Node\\Arg",
+        "PhpParser\\Node\\Expr",
+        "PhpParser\\Node\\Expr\\CallLike",
+        "PhpParser\\Node\\Expr\\ConstFetch",
+        "PhpParser\\Node\\Expr\\UnaryMinus",
+        "PhpParser\\Node\\Identifier",
+        "PhpParser\\Node\\Scalar\\Float_",
+        "PhpParser\\Node\\Scalar\\Int_",
+        "PhpParser\\Node\\Scalar\\String_",
+        "PHPStan\\Reflection\\FunctionReflection",
+        "PHPStan\\Reflection\\MethodReflection",
+        "PHPStan\\Reflection\\ParameterReflection",
+        "Rector\\Contract\\Rector\\ConfigurableRectorInterface",
+        "Rector\\NodeTypeResolver\\PHPStan\\ParametersAcceptorSelectorVariantsWrapper",
+        "Rector\\PHPStan\\ScopeFetcher",
+        "Rector\\Rector\\AbstractRector",
+        "Rector\\Reflection\\ReflectionResolver",
+        "Rector\\ValueObject\\PhpVersionFeature",
+        "Rector\\VersionBonding\\Contract\\MinPhpVersionInterface",
+        "Webmozart\\Assert\\Assert"
+    ],
+    "php-core-extensions": [
+        "Core",
+        "date",
+        "json",
+        "hash",
+        "pcre",
+        "Phar",
+        "Reflection",
+        "SPL",
+        "random",
+        "standard"
+    ],
+    "scan-files": []
+}

@@ -1,0 +1,5 @@
+<?php
+
+function logLine(bool $stderr, string ...$parts): void {}
+
+logLine(true, 'a', 'b');

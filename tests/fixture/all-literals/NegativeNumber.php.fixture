@@ -1,0 +1,5 @@
+<?php
+
+function seek(int $offset): void {}
+
+seek(-5);
