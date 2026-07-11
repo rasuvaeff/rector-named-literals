@@ -11,7 +11,7 @@ of scope (Rector core's `AddNameToNullArgumentRector` owns it).
 
 Public API: `AddNameToLiteralArgumentRector` (+ its `BOOL`/`NUMERIC`/`STRING`
 option constants). `Internal\{LiteralMatcher, ArgumentNamingPlanner,
-LiteralArgumentNamer}` are @internal.
+LiteralArgumentNamer, NativeSignatureValidator}` are @internal.
 
 ## Golden rules
 

@@ -20,8 +20,11 @@ use Rector\Reflection\ReflectionResolver;
  *
  * Skipped entirely: first-class callable syntax, argument unpacking, calls
  * without arguments, callees declared on an interface (implementations may
- * legally rename parameters — named arguments would break them), and callees
- * whose declaration (or any ancestor class) carries `@no-named-arguments`.
+ * legally rename parameters — named arguments would break them), callees
+ * whose declaration (or any ancestor class) carries `@no-named-arguments`,
+ * and built-in callees whose native signature does not confirm the planned
+ * names (PHPStan's signature map invents fixed-arity variants for variadic
+ * built-ins — see {@see NativeSignatureValidator}).
  *
  * Exercised end-to-end by the fixture suite (`rector process` on real files);
  * excluded from in-process mutation coverage — see infection.json5.
@@ -35,6 +38,7 @@ final readonly class LiteralArgumentNamer
     public function __construct(
         private ReflectionResolver $reflectionResolver,
         private ArgumentNamingPlanner $planner,
+        private NativeSignatureValidator $nativeSignatureValidator,
     ) {}
 
     /**
@@ -69,11 +73,57 @@ final readonly class LiteralArgumentNamer
             return null;
         }
 
+        if (!$this->planMatchesRuntime($reflection, $plan)) {
+            return null;
+        }
+
         foreach ($plan as $position => $parameterName) {
             $args[$position]->name = new Identifier($parameterName);
         }
 
         return $callLike;
+    }
+
+    /**
+     * Whether the planned names hold at runtime. Userland callees pass as-is
+     * (PHPStan reflects their real source); built-in callees are confirmed
+     * against native reflection, since PHPStan's signature map may present
+     * parameter names PHP does not actually accept. A built-in that native
+     * reflection cannot load (extension absent in this process) is not
+     * confirmable — skipped.
+     *
+     * @param array<int, string> $plan position => parameter name
+     */
+    private function planMatchesRuntime(FunctionReflection|MethodReflection $reflection, array $plan): bool
+    {
+        try {
+            if ($reflection instanceof FunctionReflection) {
+                if (!$reflection->isBuiltin()) {
+                    return true;
+                }
+
+                $name = $reflection->getName();
+
+                if (!\function_exists($name)) {
+                    return false;
+                }
+
+                return $this->nativeSignatureValidator->confirms(new \ReflectionFunction($name), $plan);
+            }
+
+            $classReflection = $reflection->getDeclaringClass();
+
+            if (!$classReflection->isBuiltin()) {
+                return true;
+            }
+
+            return $this->nativeSignatureValidator->confirms(
+                new \ReflectionMethod($classReflection->getName(), $reflection->getName()),
+                $plan,
+            );
+        } catch (\ReflectionException) {
+            return false;
+        }
     }
 
     private function shouldSkipCall(CallLike $callLike): bool

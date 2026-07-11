@@ -1,0 +1,11 @@
+<?php
+
+function clamp(int $value): int
+{
+    return min(max($value, 0), 100);
+}
+
+function head(string $value): string
+{
+    return substr($value, offset: 0, length: 3);
+}

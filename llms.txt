@@ -31,7 +31,9 @@ composer require --dev rasuvaeff/rector-named-literals
 - Skips (call untouched): interface-declared callees (implementations may
   rename params), `@no-named-arguments` on function/class/ancestors, argument
   unpacking, variadic target params, unresolvable callees, first-class
-  callables.
+  callables, built-in callees whose planned names fail native reflection
+  (PHPStan's signature map invents `min(arg1, arg2, …)` variants for variadic
+  built-ins — PHP rejects those names at runtime).
 - `null` literals: use Rector's own AddNameToNullArgumentRector alongside.
 - Unknown config key / non-bool value → the rector run fails.
 - Caveat: a named argument makes the parameter name part of your contract with

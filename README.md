@@ -79,6 +79,7 @@ A call is left untouched when the conversion is not provably safe:
 | Matched position maps to a **variadic** parameter | variadic values cannot be named |
 | Callee not resolvable by reflection | no parameter names to take |
 | First-class callable syntax (`foo(...)`) | not an invocation |
+| **Built-in** callee whose planned names fail native reflection | PHPStan's signature map invents fixed-arity variants for variadic built-ins (`min(arg1, arg2, …)`) — PHP rejects those names at runtime with "unknown named parameter". Every planned name on a built-in is confirmed against the real signature first |
 
 `null` literals are deliberately out of scope — Rector's own
 `AddNameToNullArgumentRector` (CodeQuality set) already covers them; run both
