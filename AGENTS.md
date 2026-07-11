@@ -65,6 +65,16 @@ Or with Make: `make build`, `make test`, `make mutation`, `make release-check`.
   composer-require-checker symbol whitelist for those namespaces.
 - `getRuleDefinition()` no longer exists in Rector 2.x contracts — do not
   re-add it; the README documents the rule.
+- **Property-test `<test>Generators()` methods must be `public static`**:
+  their only call site is property-testing's reflection, so rector's
+  `RemoveUnusedPrivateMethodRector` deletes them when private. Public methods
+  are safe; testo does not treat non-void-returning methods as tests.
+- **BC check tolerates SKIPPED-only findings** (build.yml step + `make
+  bc-check`): rector/rector's composer autoload is files-only, roave cannot
+  reflect `AbstractRector`-derived symbols and reports them as `[BC] SKIPPED`,
+  counted as breaks. Any real `[BC]` break still fails. Use
+  `make release-check` (not `composer release-check`) — it routes through the
+  tolerant bc-check.
 - Code: `declare(strict_types=1)`, `final readonly class` (the rule itself is
   `final class` — AbstractRector parent), `#[\Override]`, explicit types.
 - **CI workflows are SHA-pinned** (`uses:` → 40-char SHA + `# vN`),
