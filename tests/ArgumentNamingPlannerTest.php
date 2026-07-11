@@ -263,7 +263,7 @@ final class ArgumentNamingPlannerTest
     /**
      * @return array<string, ArbitraryInterface>
      */
-    private function appliedPlanNeverProducesPositionalAfterNamedGenerators(): array
+    public static function appliedPlanNeverProducesPositionalAfterNamedGenerators(): array
     {
         $argShape = Gen::map(
             Gen::tuple(
@@ -298,7 +298,7 @@ final class ArgumentNamingPlannerTest
     /**
      * @return array<string, ArbitraryInterface>
      */
-    private function unpackAnywhereAlwaysYieldsEmptyPlanGenerators(): array
+    public static function unpackAnywhereAlwaysYieldsEmptyPlanGenerators(): array
     {
         $argShape = Gen::map(
             Gen::tuple(Gen::oneOf(['bool', 'variable']), Gen::bool()),
