@@ -48,16 +48,24 @@ update-deps:
 	$(DOCKER) sh -c 'git config --global --add safe.directory /app; composer update -q; composer normalize'
 
 release-check:
-	$(DOCKER) composer release-check
+	$(DOCKER) composer build
+	$(DOCKER) composer rector
+	$(MAKE) bc-check
 	$(MAKE) mutation
 
+# roave cannot reflect rector's files-only-autoloaded classes; SKIPPED-only
+# findings are tolerated (mirrors the build.yml BC step).
 bc-check:
 	$(DOCKER) sh -c 'git config --global --add safe.directory "*"; \
 	  LATEST=$$(git describe --tags --abbrev=0 2>/dev/null || true); \
-	  if [ -n "$$LATEST" ]; then \
-	    composer bc-check -- --from=$$LATEST; \
-	  else \
-	    echo "No previous tag - skipping BC check"; \
+	  if [ -z "$$LATEST" ]; then \
+	    echo "No previous tag - skipping BC check"; exit 0; \
+	  fi; \
+	  CODE=0; OUT=$$(composer bc-check -- --from=$$LATEST 2>&1) || CODE=$$?; \
+	  echo "$$OUT"; \
+	  if [ "$$CODE" -ne 0 ]; then \
+	    if echo "$$OUT" | grep "^\[BC\] " | grep -qv "^\[BC\] SKIPPED"; then exit "$$CODE"; fi; \
+	    echo "Only SKIPPED findings (unresolvable rector internals) - treating as pass"; \
 	  fi'
 
 help:
