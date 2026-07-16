@@ -7,6 +7,8 @@
 [![PHP](https://img.shields.io/packagist/dependency-v/rasuvaeff/rector-named-literals/php)](https://packagist.org/packages/rasuvaeff/rector-named-literals)
 [![License](https://img.shields.io/packagist/l/rasuvaeff/rector-named-literals.svg)](LICENSE.md)
 
+[Русская версия](README.ru.md)
+
 A [Rector](https://getrector.com) rule that defuses the **boolean trap**: it
 adds parameter names to literal arguments, so call sites explain themselves.
 
