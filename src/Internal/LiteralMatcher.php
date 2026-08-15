@@ -29,7 +29,7 @@ final readonly class LiteralMatcher
     public function matches(Expr $expr): bool
     {
         if ($this->bool && $expr instanceof ConstFetch) {
-            return \in_array(strtolower($expr->name->toString()), ['true', 'false'], true);
+            return \in_array(strtolower($expr->name->toString()), ['true', 'false'], strict: true);
         }
 
         if ($this->numeric && $this->isNumericLiteral($expr)) {

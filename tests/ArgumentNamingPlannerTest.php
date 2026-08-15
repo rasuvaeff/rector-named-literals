@@ -16,6 +16,7 @@ use PHPStan\Reflection\PassedByReference;
 use PHPStan\Type\MixedType;
 use PHPStan\Type\Type;
 use Rasuvaeff\PropertyTesting\ArbitraryInterface;
+use Rasuvaeff\PropertyTesting\Classify;
 use Rasuvaeff\PropertyTesting\Gen;
 use Rasuvaeff\PropertyTesting\Property;
 use Rasuvaeff\RectorNamedLiterals\Internal\ArgumentNamingPlanner;
@@ -224,6 +225,14 @@ final class ArgumentNamingPlannerTest
 
         $plan = (new ArgumentNamingPlanner())->plan($args, $parameters, $this->isBoolLiteral());
 
+        // The empty plan satisfies every assertion below vacuously — nothing
+        // is renamed, so nothing can be renamed wrongly. Without a floor on
+        // the other side, a shape generator that drifted toward calls with no
+        // bool literal would leave the planner itself unexercised.
+        Classify::cover($plan !== [], 'something is named', 15.0);
+        Classify::cover($plan === [], 'nothing to name', 15.0);
+        Classify::when($originallyNamed !== [], 'the call already had named arguments');
+
         // Plan positions are strictly ascending (holds for the empty plan too).
         $positions = array_keys($plan);
         $sorted = $positions;
@@ -233,7 +242,7 @@ final class ArgumentNamingPlannerTest
         foreach ($plan as $position => $name) {
             // Valid positions, matching parameter names, never re-naming.
             Assert::true(isset($args[$position]));
-            Assert::false(\in_array($position, $originallyNamed, true));
+            Assert::false(\in_array($position, $originallyNamed, strict: true));
             Assert::same($parameters[$position]->getName(), $name);
             Assert::false($parameters[$position]->isVariadic());
 
@@ -267,15 +276,39 @@ final class ArgumentNamingPlannerTest
     {
         $argShape = Gen::map(
             Gen::tuple(
-                Gen::oneOf(['bool', 'variable', 'string', 'unpack']),
+                // Gen::elements(), not Gen::oneOf(): oneOf() is variadic over
+                // values, so passing one array made every draw that same
+                // array — `kind` never matched a case, every argument came
+                // out a plain Variable, and the planner had nothing to name
+                // in any of 400 runs. The coverage gate below is what found it.
+                //
+                // Unpacking is weighted down rather than equal: one unpacked
+                // argument anywhere makes the whole call unconvertible, so at
+                // one in four it swallowed every call long enough to matter.
+                Gen::frequency([
+                    [4, Gen::constant('bool')],
+                    [3, Gen::constant('variable')],
+                    [3, Gen::constant('string')],
+                    [1, Gen::constant('unpack')],
+                ]),
                 Gen::bool(),
             ),
             static fn(array $pair): array => ['kind' => $pair[0], 'named' => $pair[1]],
         );
 
         return [
-            'shape' => Gen::arrayOf($argShape),
-            'variadicTail' => Gen::intBetween(0, 2),
+            // Bounded to the size of a real call. Gen::arrayOf() defaults to a
+            // maximum of 100, and across fifty arguments the chance of none of
+            // them being an unpack — which is what makes a call convertible at
+            // all — is about one in a million.
+            'shape' => Gen::arrayOf($argShape, 0, 6),
+            // A variadic tail and a missing parameter both make the plan
+            // empty, so they are weighted down for the same reason.
+            'variadicTail' => Gen::frequency([
+                [3, Gen::constant(0)],
+                [1, Gen::constant(1)],
+                [1, Gen::constant(2)],
+            ]),
         ];
     }
 
@@ -301,7 +334,7 @@ final class ArgumentNamingPlannerTest
     public static function unpackAnywhereAlwaysYieldsEmptyPlanGenerators(): array
     {
         $argShape = Gen::map(
-            Gen::tuple(Gen::oneOf(['bool', 'variable']), Gen::bool()),
+            Gen::tuple(Gen::elements(['bool', 'variable']), Gen::bool()),
             static fn(array $pair): array => ['kind' => $pair[0], 'named' => $pair[1]],
         );
 
@@ -328,6 +361,16 @@ final class ArgumentNamingPlannerTest
 
         foreach (array_reverse(array_keys($shape)) as $i) {
             if ($shape[$i]['kind'] === 'unpack') {
+                // An unpacked argument is positional, so a named argument
+                // anywhere before it is already invalid PHP: the named suffix
+                // ends here rather than seeing through it. Treating unpack as
+                // transparent produced calls like `f($a, p7: $b, ...$rest,
+                // p9: $c)`, which the planner correctly refuses to touch — and
+                // the property then blamed the empty plan for a
+                // positional-after-named the input arrived with.
+                $inNamedSuffix = false;
+                $shape[$i]['named'] = false;
+
                 continue;
             }
 
@@ -390,7 +433,7 @@ final class ArgumentNamingPlannerTest
     private function isBoolLiteral(): callable
     {
         return static fn(Expr $expr): bool => $expr instanceof ConstFetch
-            && \in_array(strtolower($expr->name->toString()), ['true', 'false'], true);
+            && \in_array(strtolower($expr->name->toString()), ['true', 'false'], strict: true);
     }
 
     private function param(string $name, bool $variadic = false): ParameterReflection
