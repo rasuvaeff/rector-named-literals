@@ -28,7 +28,7 @@ final class AddNameToLiteralArgumentRectorTest
         $fixtureDir = __DIR__ . '/fixture/' . $suite;
         $workDir = sys_get_temp_dir() . '/rector-named-literals-' . $suite . '-' . bin2hex(random_bytes(4));
 
-        mkdir($workDir, 0o777, true);
+        mkdir($workDir, 0o777, recursive: true);
 
         try {
             $fixtures = glob($fixtureDir . '/*.php.fixture') ?: [];
@@ -82,7 +82,7 @@ final class AddNameToLiteralArgumentRectorTest
             PHP);
 
         $workDir = sys_get_temp_dir() . '/rector-named-literals-invalid-' . bin2hex(random_bytes(4));
-        mkdir($workDir, 0o777, true);
+        mkdir($workDir, 0o777, recursive: true);
         file_put_contents($workDir . '/Sample.php', "<?php\nfunction f(bool \$x): void {}\nf(true);\n");
 
         try {
