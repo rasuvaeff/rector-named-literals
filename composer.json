@@ -2,7 +2,7 @@
     "name": "rasuvaeff/rector-named-literals",
     "description": "Rector rule that adds parameter names to literal arguments (bool by default, numeric/string opt-in)",
     "license": "BSD-3-Clause",
-    "type": "library",
+    "type": "rector-extension",
     "keywords": [
         "rector",
         "rector-rule",
