@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 - `provideMinPhpVersion()` returns `PhpVersion::PHP_80` instead of the deprecated `PhpVersionFeature::NAMED_ARGUMENTS` (deprecated in newer `rector/rector`, which turned Psalm red on a fresh `composer update`). Behaviour is unchanged: the minimum PHP version stays 8.0.
+- Mutation testing now counts code the tests execute but do not name in `#[Covers]` (`infection --threads=max --with-uncovered`); the `PublicVisibility` mutator is off and default values in parameter lists are ignored. No `src/` changes.
 
 ## 1.0.1 — 2026-09-27
 
