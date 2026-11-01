@@ -11,7 +11,7 @@ use Rasuvaeff\RectorNamedLiterals\Internal\LiteralArgumentNamer;
 use Rasuvaeff\RectorNamedLiterals\Internal\LiteralMatcher;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Rector\AbstractRector;
-use Rector\ValueObject\PhpVersionFeature;
+use Rector\ValueObject\PhpVersion;
 use Rector\VersionBonding\Contract\MinPhpVersionInterface;
 use Webmozart\Assert\Assert;
 
@@ -98,6 +98,6 @@ final class AddNameToLiteralArgumentRector extends AbstractRector implements Con
     #[\Override]
     public function provideMinPhpVersion(): int
     {
-        return PhpVersionFeature::NAMED_ARGUMENTS;
+        return PhpVersion::PHP_80;
     }
 }
