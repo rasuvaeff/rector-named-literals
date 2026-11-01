@@ -18,7 +18,7 @@
         "Rector\\PHPStan\\ScopeFetcher",
         "Rector\\Rector\\AbstractRector",
         "Rector\\Reflection\\ReflectionResolver",
-        "Rector\\ValueObject\\PhpVersionFeature",
+        "Rector\\ValueObject\\PhpVersion",
         "Rector\\VersionBonding\\Contract\\MinPhpVersionInterface",
         "Webmozart\\Assert\\Assert"
     ],
