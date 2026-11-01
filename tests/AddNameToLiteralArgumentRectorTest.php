@@ -97,6 +97,11 @@ final class AddNameToLiteralArgumentRectorTest
         }
     }
 
+    public function requiresPhp80ForNamedArguments(): void
+    {
+        Assert::same((new \ReflectionClass(AddNameToLiteralArgumentRector::class))->newInstanceWithoutConstructor()->provideMinPhpVersion(), 80000);
+    }
+
     private function runRector(string $paths, string $config): string
     {
         [$exitCode, $output] = $this->runRectorRaw($paths, $config);
