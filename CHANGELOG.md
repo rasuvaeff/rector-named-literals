@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 1.0.2 — 2026-11-21
 
 - PHP 8.6 is supported: the `php` constraint is widened to `8.3 - 8.6` (#16). The backward-compatibility CI job runs on PHP 8.5.
 - `provideMinPhpVersion()` returns `PhpVersion::PHP_80` instead of the deprecated `PhpVersionFeature::NAMED_ARGUMENTS` (deprecated in newer `rector/rector`, which turned Psalm red on a fresh `composer update`). Behaviour is unchanged: the minimum PHP version stays 8.0.
