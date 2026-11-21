@@ -23,7 +23,7 @@
         "source": "https://github.com/rasuvaeff/rector-named-literals"
     },
     "require": {
-        "php": "8.3 - 8.5",
+        "php": "8.3 - 8.6",
         "rector/rector": "^2.5"
     },
     "require-dev": {

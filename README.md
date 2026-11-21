@@ -25,7 +25,7 @@ $mailer->send($message, urgent: true, queue: false);
 
 ## Requirements
 
-- PHP 8.3+ to run the rule
+- PHP 8.3 – 8.6 to run the rule
 - `rector/rector` ^2.0
 
 The **processed code** only needs PHP 8.0+ (named arguments): the rule declares
